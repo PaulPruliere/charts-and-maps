@@ -1,5 +1,8 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
+<head>
+    <link type="text/css" rel="stylesheet" href="bostock_style.css"/>
+</head>
 <style>
 body {
   background: #fcfcfa;
@@ -24,12 +27,14 @@ body {
 .countries {
   fill: #222;
 }
+
 </style>
 <body>
 <script src="http://d3js.org/d3.v3.min.js"></script>
 <script src="http://d3js.org/topojson.v1.min.js"></script>
-<!--<link type="text/css" rel="stylesheet" href="https://mbostock.github.io/d3/talk/20111018/style.css"/>-->
-<!--<link type="text/css" rel="stylesheet" href="https://mbostock.github.io/d3/talk/20111018/colorbrewer/colorbrewer.css"/>-->
+<div id="footer">
+    global terrorism 1970-2015
+</div>
 <script>
 
 var width = 1280,
@@ -41,7 +46,8 @@ var projection = d3.geo.azimuthalEquidistant()
      .scale(200)
      .precision(0.3)
      .clipAngle(180 - 1e-3)
-     .rotate(rotate);
+     .rotate(rotate)
+        .translate([width/2, height/2]);
 
 var path = d3.geo.path()
     .projection(projection);
@@ -117,8 +123,8 @@ d3.json("attack.json", function(error, attack){
            .append("circle")
            .attr("cx", function(d){return projection(d.coord)[0]})
            .attr("cy", function(d){return projection(d.coord)[1]})
-           .attr("r", "2px")
-           .attr("fill", "steelblue");
+           .attr("r", "1px")
+           .attr("fill", "red");
 });
 
 </script>
