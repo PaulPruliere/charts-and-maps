@@ -1,3 +1,3 @@
 # charts-and-maps
 
-![Alt text] (images/global_terrorism.png)
+![picture] (images/global_terrorism.png)
