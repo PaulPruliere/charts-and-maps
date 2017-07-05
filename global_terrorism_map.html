@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
+body {
+  background: #fcfcfa;
+  height: 500px;
+  position: relative;
+  width: 960px;
+}
+.stroke {
+  fill: none;
+  stroke: #000;
+  stroke-width: 3px;
+}
+.fill {
+  fill: #fff;
+}
+.graticule {
+  fill: none;
+  stroke: #777;
+  stroke-width: .5px;
+  stroke-opacity: .5;
+}
+.countries {
+  fill: #222;
+}
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<!--<link type="text/css" rel="stylesheet" href="https://mbostock.github.io/d3/talk/20111018/style.css"/>-->
+<!--<link type="text/css" rel="stylesheet" href="https://mbostock.github.io/d3/talk/20111018/colorbrewer/colorbrewer.css"/>-->
+<script>
+
+var width = 1280,
+    height = 1200,
+    rotate = [0,0],
+    graticule = d3.geo.graticule();
+
+var projection = d3.geo.azimuthalEquidistant()
+     .scale(200)
+     .precision(0.3)
+     .clipAngle(180 - 1e-3)
+     .rotate(rotate);
+
+var path = d3.geo.path()
+    .projection(projection);
+
+var m0,
+    o0;
+
+var drag = d3.behavior.drag()
+    .on("dragstart", function() {
+    // Adapted from http://mbostock.github.io/d3/talk/20111018/azimuthal.html and updated for d3 v3
+      var proj = projection.rotate();
+      m0 = [d3.event.sourceEvent.pageX, d3.event.sourceEvent.pageY];
+      o0 = [-proj[0],-proj[1]];
+    })
+    .on("drag", function() {
+      if (m0) {
+        var m1 = [d3.event.sourceEvent.pageX, d3.event.sourceEvent.pageY],
+            o1 = [o0[0] + (m0[0] - m1[0]) / 4, o0[1] + (m1[1] - m0[1]) / 4];
+        projection.rotate([-o1[0], -o1[1]]);
+      }
+
+    // Update the map
+        path = d3.geo.path().projection(projection);
+      d3.selectAll("path").attr("d", path);
+      d3.selectAll("circle")
+              .attr("cx", function(d){return projection(d.coord)[0]})
+              .attr("cy", function(d){return projection(d.coord)[1]});
+    });
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height)
+    .call(drag);
+
+svg.append("defs").append("path")
+    .datum({type: "Sphere"})
+    .attr("id", "sphere")
+    .attr("d", path);
+
+svg.append("use")
+    .attr("class", "stroke")
+    .attr("xlink:href", "#sphere");
+
+svg.append("use")
+    .attr("class", "fill")
+    .attr("xlink:href", "#sphere");
+
+svg.append("path")
+    .datum(graticule)
+    .attr("class", "graticule")
+    .attr("d", path);
+
+d3.json("https://unpkg.com/world-atlas@1.1.4/world/110m.json", function(error, plates) {
+  svg.insert("path", ".graticule")
+      .datum(topojson.feature(plates, plates.objects.countries))
+      .attr("class", "countries")
+      .attr("d", path);
+});
+
+d3.json("attack.json", function(error, attack){
+
+    attack = attack.slice(0, 5000);
+
+    attack.forEach(function(d){
+        d.coord = [d.long, d.lat];
+        delete d.lat;
+        delete d.long;
+    });
+
+    svg.selectAll("circle")
+           .data(attack)
+           .enter()
+           .append("circle")
+           .attr("cx", function(d){return projection(d.coord)[0]})
+           .attr("cy", function(d){return projection(d.coord)[1]})
+           .attr("r", "2px")
+           .attr("fill", "steelblue");
+});
+
+</script>
+</body>
+</html>
