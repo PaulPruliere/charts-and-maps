@@ -1,3 +1,3 @@
 # charts-and-maps
 
-![picture] (global_terrorism.png)
+![picture] (charts_and_maps/global_terrorism.png)
