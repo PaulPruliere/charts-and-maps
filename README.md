@@ -1,3 +1,3 @@
 # charts-and-maps
 
-![alt text] (/global_terrorism.png)
+![alt tag] (https://github.com/PaulPruliere/charts-and-maps/blob/master/global_terrorism.png "map pic")
