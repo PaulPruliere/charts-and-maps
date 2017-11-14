@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<head>
+    <link type="text/css" rel="stylesheet" href="bostock_style.css"/>
+</head>
+<style>
+body {
+  background: #fcfcfa;
+  height: 500px;
+  position: relative;
+  width: 960px;
+}
+.stroke {
+  fill: rgba(0, 0, 0, 0.95);
+  stroke: #aaa;
+  stroke-width: 3px;
+}
+.fill {
+  fill: #fff;
+}
+.graticule {
+  fill: none;
+  stroke: rgba(2, 38, 187, 0.65);
+  stroke-width: .7px;
+  stroke-opacity: 0.6;
+}
+.countries {
+  fill: #222;
+}
+
+text {
+  font: 24px "Helvetica Neue", Helvetica;
+  text-anchor: middle;
+      fill: rgba(111, 36, 7, 0.84);
+
+}
+
+path {
+  font: 24px "Helvetica Neue", Helvetica;
+  text-anchor: middle;
+      fill: rgba(56, 221, 140, 0.56);
+
+}
+
+</style>
+<body>
+<script src="http://d3js.org/d3.v3.min.js"></script>
+<script src="http://d3js.org/topojson.v1.min.js"></script>
+<script>
+var width = 1280,
+    height = 1200,
+    rotate = [0,0],
+    graticule = d3.geo.graticule();
+var projection = d3.geo.azimuthalEquidistant()
+     .scale(200)
+     .precision(0.3)
+     .clipAngle(180 - 1e-3)
+     .rotate(rotate)
+        .translate([width/2, height/2]);
+var path = d3.geo.path()
+    .projection(projection);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+svg.append("path")
+    .datum(graticule)
+    .attr("class", "graticule")
+    .attr("d", path);
+
+svg.append("rect")
+    .attr("width", "100%")
+    .attr("height", "100%")
+    .attr("fill", "pink").attr("opacity", 0.1);
+
+d3.json("/static/countries.json", function(error, countries) {
+
+    svg.append("g")
+            .attr("class", "states")
+            .selectAll("path")
+            .data(topojson.feature(countries, countries.objects.collection).features)
+            .enter()
+            .append("a")
+            .attr("xlink:href", function(d){
+                return "http://localhost:8000/earth/" + d.id + "/";
+            })
+            .text(function(d){ return d.id})
+            .append("path")
+                .attr("d", path)
+            .on("click", function(d){
+                thus = d3.select(this);
+                thus.style('fill', "#4EF4DF");
+            })
+            .on("mouseover", function(d){thus = d3.select(this);
+                d3.select(this).style('opacity', 0.65)
+
+            })
+            .on("mouseout", function(d){thus = d3.select(this);
+                d3.select(this).style('opacity', 1)
+            });
+
+    svg.selectAll("text")
+            .data(topojson.feature(countries, countries.objects.collection).features)
+            .enter()
+            .append("text")
+            .attr("fill", "red")
+            .style("font-size", "8px")
+            .style("font","Helvetica")
+            .text(function(d){return d.id})
+            .attr("transform", function(d){
+                centroid = path.centroid(d);
+                var a = centroid[0],
+                        b = centroid[1];
+                return "translate(" + a + "," + b + ")";
+    });
+
+});
+
+</script>
+</body>
+</html>
