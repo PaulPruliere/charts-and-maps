@@ -2,7 +2,7 @@
 
 click on a country it will download dummy csv data 
 
-<img src="https://github.com/PaulPruliere/charts-and-maps/blob/master/load_country_csv/map.gif" alt="alt text" width="250" height="250">
+<img src="https://github.com/PaulPruliere/charts-and-maps/blob/master/load_country_csv/map.gif" alt="alt text" width="800" height="400">
 
 draggable rotative world map with terrorist attacks from 1970 to 2015
 
