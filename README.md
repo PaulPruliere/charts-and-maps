@@ -1,8 +1,9 @@
-# Some charts and maps for fun
+# Playing around with D3.js
 
-click on a country it will download dummy csv data 
+click on a country it will download dummy csv data
+load_country_csv, based on Django
 
-<img src="https://github.com/PaulPruliere/charts-and-maps/blob/master/load_country_csv/map.gif" alt="alt text" width="800" height="400">
+<img src="https://github.com/PaulPruliere/charts-and-maps/blob/master/load_country_csv/map.gif" alt="alt text" width="600" height="266">
 
 draggable rotative world map with terrorist attacks from 1970 to 2015
 
